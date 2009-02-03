@@ -1,0 +1,55 @@
+/* styles for Home */
+
+#request-list
+{
+	border: 1px #000 solid;
+}
+
+#request-list h1
+{
+	font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+	font-size: 30px;
+	margin: 45px;
+	text-align: left;
+	font-variant: small-caps;
+	color: #039;
+}
+
+#request-table
+{
+	font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+	font-size: 12px;
+	background: #fff;
+	margin: 45px;
+	width: 480px;
+	border-collapse: collapse;
+	text-align: left;
+}
+#request-table th
+{
+	font-size: 14px;
+	font-weight: normal;
+	color: #039;
+	padding: 10px 8px;
+	border-bottom: 2px solid #6678b1;
+}
+#request-table td
+{
+	color: #669;
+	font-size: 12px;
+	padding: 9px 8px 0px 8px;
+}
+#request-table tbody tr:hover td
+{
+	color: #009;
+}
+
+#request-table .list-line-odd
+{
+	background-color: #CCC;
+}
+
+#request-table .list-line-even
+{
+	background-color: #FFF;
+}
