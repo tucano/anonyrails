@@ -1,0 +1,15 @@
+== Welcome to Anonyrails
+
+This rails application can proxy external web pages using the render Action Method
+The actual test implementation is based on this articles
+
+http://wiki.rubyonrails.org/rails/pages/HowToRenderProxiedPages
+http://wiki.rubyonrails.org/rails/pages/HowToRouteGenericURLsToAController
+
+
+== Getting Started
+
+1. start a mongrel server on a port: ./script/server -p 3000
+2. connect to the server without any parameter to reach the home controller: http://0.0.0.0:3000/
+3. add another url at the end of the path to proxy pages: http://0.0.0.0:3000/http://www.example.com/index.html
+4. is possible to chain anonyrails proxies togheter: http://0.0.0.0:3000/http://0.0.0.0:3001/http://0.0.0.0:3002/http://www.example.com/index.html
