@@ -1,7 +1,36 @@
-<div id='request-list'>
 
-<h1>request variables</h1>
+<div id="main">
+  <h1>Welcome to Anonyrails</h1>
+  
+  <table id="home-table" summary="Host info">
+  <thead>
+    <tr>
+      <th colspan="2">Host info</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr valign="top">
+      <td>Host ip</td>
+      <td><%= @host %></td>
+    </tr>
+    <tr valign="top">
+      <td>Host port</td>
+      <td><%= @host_port %></td>
+    </tr>
+    <tr valign="top">
+      <td>Remote address</td>
+      <td><%= @host_remote %></td>
+    </tr>
+    <tr valign="top">
+      <td>Remote ip</td>
+      <td><%= @host_remoteip %></td>
+    </tr>
+  </tbody>
+  </table>
+  <%=  button_to_function "Connection Details", "Effect.toggle('request-environment', 'blind',{ duration: 0.5 })", {:class => 'home-button'} %>
+</div>
 
+<div id="request-environment" style="display:none">
 <table id="request-table" summary="Request Environment Info">
   <thead>
     <tr>
@@ -10,7 +39,7 @@
     </tr>
   </thead>
   <tbody>
-  <% for item in @request_vars %>
+  <% for item in request.env %>
     <tr valign="top" class="<%= cycle('list-line-odd','list-line-even') %>">
       <td><%= item[0] %></td>
       <td><%= item[1] %></td>
@@ -18,5 +47,4 @@
   <% end %>
   </tbody>
 </table>
-
 </div>

@@ -1,21 +1,18 @@
 /* styles for Home */
+#main { margin: 20px 10px 10px 20px; }
 
-#request-list
-{
-	border: 1px #000 solid;
-}
-
-#request-list h1
+#main h1
 {
 	font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
 	font-size: 30px;
-	margin: 45px;
+	margin: 45px 5px 5px 45px;
 	text-align: left;
 	font-variant: small-caps;
 	color: #039;
 }
 
-#request-table
+
+#home-table
 {
 	font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
 	font-size: 12px;
@@ -25,18 +22,47 @@
 	border-collapse: collapse;
 	text-align: left;
 }
-#request-table th
+#home-table th
 {
 	font-size: 14px;
 	font-weight: normal;
 	color: #039;
-	padding: 10px 8px;
+	border-bottom: 2px solid #6678b1;
+}
+#home-table td
+{
+	color: #669;
+	font-size: 12px;
+	padding: 9px 8px 0px 8px;
+}
+#home-table tbody tr:hover td
+{
+	color: #009;
+}
+
+#request-environment { margin: 20px 10px 10px 20px; }
+
+#request-table
+{
+	font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+	font-size: 10px;
+	background: #fff;
+	margin: 5px 5px 5px 45px;
+	width: 480px;
+	border-collapse: collapse;
+	text-align: left;
+}
+#request-table th
+{
+	font-size: 12px;
+	font-weight: normal;
+	color: #039;
 	border-bottom: 2px solid #6678b1;
 }
 #request-table td
 {
 	color: #669;
-	font-size: 12px;
+	font-size: 10px;
 	padding: 9px 8px 0px 8px;
 }
 #request-table tbody tr:hover td
@@ -52,4 +78,21 @@
 #request-table .list-line-even
 {
 	background-color: #FFF;
+}
+
+.home-button
+{
+	margin: 10px 10px 10px 45px;
+	background-color: #FFF;
+	border: 2px #6678b1 solid;
+	font-size: 12px;
+	font-weight: normal;
+	color: #039;
+	font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+}
+
+.home-button:hover
+{
+	background-color: #CCC;
+	cursor: pointer;
 }

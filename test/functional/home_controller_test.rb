@@ -18,16 +18,13 @@ class HomeControllerTest < ActionController::TestCase
     assert_template 'home'
   end
 
-  def test_request_env
-    get :index
-    assert_equal :get, @request.request_method
-    assert_equal 'test.host', @request.host
-  end
-
   def test_page_response
     get :index
     assert_select "title"
-    assert_select "div#request-list" do
+    assert_select "div#main" do
+      assert_select "table#home-table"
+    end
+    assert_select "div#request-environment" do
       assert_select "table#request-table"
     end
   end
