@@ -1,29 +1,41 @@
+# HideController
 class HideController < ApplicationController
+
   def index
     
     # Not sure if this is thebest solution, may be:
-    # @mylocal = request.remote_addr
+    # @mylocal = request.remote_addr <-- but this don't give me the port...
     @mylocal = request.env['HTTP_HOST']
-    @method = request.request_method
+    @mymethod = request.request_method
     @myparams = request.parameters
 
-    @myurl  = URI.parse(request.parameters[:myurl])
-    if @myurl.path = "" then @myurl.path= '/index.html' end
+    @myurl  = parse_url(request.parameters[:myurl])
 
-    @myresponse = get_net_object()
-    
-    render :text => @myresponse.body
-  
+    begin
+      myresp = Net::HTTP.start(@myurl.host,@myurl.port) { |x|
+        x.send(@mymethod, @myurl.path, @myparams)  
+      }
+    end
+
+    case myresp
+      when Net::HTTPSuccess then 
+        render :text => myresp.body
+      when Net::HTTPRedirection then 
+        newurl = '/' + CGI::unescape(myresp['location'])
+        redirect_to(newurl)
+    else
+      myresp.error!
+    end
   end
 
   private
 
-  def get_net_object
-    begin
-      myresp = Net::HTTP.start(@myurl.host,@myurl.port) { |x|
-        x.send(@method, @myurl.path, @myparams)  
-      }
+  def parse_url(url_str)
+    url = URI.parse(url_str)
+    if url.path == "" then 
+      url.path= '/index.html'
     end
+    return url
   end
 
 end
