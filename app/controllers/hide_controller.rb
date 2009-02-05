@@ -21,22 +21,31 @@ class HideController < ApplicationController
       # HANDLE CONNECTION and fetch a response
       # Here NoMethodError is:
       # 1. parameters errors
+            
       begin
-        myresp = Net::HTTP.start(@myurl.host,@myurl.port) { |http|
+        @myresp = Net::HTTP.start(@myurl.host,@myurl.port) { |http|
           http.send(@mymethod, @myurl.path, @myurl.query)  
         }
+      rescue SocketError
+        render :text => "Socket Error, URL: #{@myurl}"
+      rescue Errno::ECONNREFUSED
+        render :text => "Connection Refused, URL: #{@myurl}"
+      rescue Errno::ECONNRESET
+        render :text => "Connection Reset, URL: #{@myurl}"
+      rescue NoMethodError
+        render :text => "<b/>NoMethodError</b> <br/> URL: #{@myurl} <br/> RESPONSE #{@myresp} <br/> QUERY_STRING #{@myurl.query} <br/> METHOD #{@mymethod}"
       end
 
       # HANDLE RESPONSE
-      case myresp
+      case @myresp
         when Net::HTTPSuccess then 
-          body = parse_links(myresp.body)
+          body = parse_links(@myresp.body)
           render :text => body
         when Net::HTTPRedirection then 
-          newurl = '/' + CGI::unescape(myresp['location'])
+          newurl = '/' + CGI::unescape(@myresp['location'])
           redirect_to(newurl)
         else
-          myresp.error!
+          @myresp.error! unless @myresp.nil?
       end
 
       flash[:last_host] = @myurl.host
@@ -63,6 +72,23 @@ class HideController < ApplicationController
 
     
     # change all links in the page
+    body.gsub!(/(src=|href=)["'](.*?)["']/) { |x|
+
+      # try to parse as URL
+      begin
+        oldurl = URI.parse($2)
+      rescue URI::InvalidURIError
+        oldurl = $2
+      end
+    
+      case oldurl
+        when URI then
+          if oldurl.absolute? then newurl = $1 + "\"" + "http://" + @mylocal + ':' + @mylocalport.to_s + "/" + $2 + "\""
+          else newurl = $1 + "\"" + "http://" + @mylocal + ':' + @mylocalport.to_s + "/http://" + @myurl.host + "/" + $2 + "\""
+          end
+      end
+    }
+
     return body
 
   end
