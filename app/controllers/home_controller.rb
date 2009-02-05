@@ -1,6 +1,5 @@
 class HomeController < ApplicationController
   def index
-    # get info
     @host            = request.host 
     @host_port       = request.port
     @host_remote     = request.remote_addr
