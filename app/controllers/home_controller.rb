@@ -4,6 +4,6 @@ class HomeController < ApplicationController
     @host_port       = request.port
     @host_remote     = request.remote_addr
     @host_remoteip   = request.remote_ip
-    @host_enviroment = request.env
+    @host_environment = request.env
   end
 end
