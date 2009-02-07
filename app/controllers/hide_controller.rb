@@ -22,9 +22,6 @@ class HideController < ApplicationController
     else
       
       # HANDLE CONNECTION and fetch a response
-      # Here NoMethodError is:
-      # 1. parameters errors
-            
       begin
         @myresp = Net::HTTP.start(@myurl.host,@myurl.port) { |http|
           http.send(@mymethod, @myurl.path, @myurl.query)  
@@ -51,6 +48,7 @@ class HideController < ApplicationController
           @myresp.error! unless @myresp.nil?
       end
 
+      # flash var to store last seen host
       flash[:last_host] = @myurl.host
 
     end
