@@ -7,7 +7,10 @@ class HideController < ApplicationController
     @mymethod = request.request_method
     @myparams = request.query_string
 
-    target = params[:myurl] + '?' + @myparams
+    target = params[:myurl] 
+    if @myparams != "" then
+      target = target + '?' + @myparams
+    end
 
     @myurl  = parse_url(target)
     
