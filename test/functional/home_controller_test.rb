@@ -14,11 +14,11 @@ class HomeControllerTest < ActionController::TestCase
     assert_response :success
     assert_template 'home'
 
-    assert assigns(:host)
-    assert assigns(:host_port)
-    assert assigns(:host_remote)
-    assert assigns(:host_remoteip)
-    assert assigns(:host_environment)
+    assert_not_nil assigns(:host)
+    assert_not_nil assigns(:host_port)
+    assert_not_nil assigns(:host_remote)
+    assert_not_nil assigns(:host_remoteip)
+    assert_not_nil assigns(:host_environment)
 
     assert_select "title"
     
