@@ -39,7 +39,7 @@
     </tr>
   </thead>
   <tbody>
-  <% for item in request.env %>
+  <% for item in @host_environment %>
     <tr valign="top" class="<%= cycle('list-line-odd','list-line-even') %>">
       <td><%= item[0] %></td>
       <td><%= item[1] %></td>
