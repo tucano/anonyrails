@@ -4,96 +4,44 @@ class HideController < ApplicationController
 
     @mylocal  = request.host
     @mylocalport = request.port
-    @mymethod = request.request_method
 
-    @mytarget = Target.new(params[:myurl],request.query_string)
+    @mytarget = Target.new(params[:myurl],request.query_string,request.method)
 
-    @myparams = request.query_string
-
-    target = params[:myurl] 
-    if @myparams != "" then
-      target = target + '?' + @myparams
+    # TRAP RELATIVE CALLS and redirect after url parsing
+    if @mytarget.url.relative? then
+      newurl = '/http://' + flash[:last_host] + '/' + @mytarget.url.to_s
+      redirect_to(newurl) and return
     end
-
-    @myurl  = parse_url(target)
-    
-    if @myurl.absolute? == false then
-
-      newurl = '/http://' + flash[:last_host] + '/' + @myurl.to_s
-      redirect_to(newurl)
-    
-    else
       
-      # HANDLE CONNECTION and fetch a response
-      begin
-        @myresp = Net::HTTP.start(@myurl.host,@myurl.port) { |http|
-          http.send(@mymethod, @myurl.path, @myurl.query)  
-        }
-      rescue SocketError
-        render :text => "Socket Error, URL: #{@myurl}"
-      rescue Errno::ECONNREFUSED
-        render :text => "Connection Refused, URL: #{@myurl}"
-      rescue Errno::ECONNRESET
-        render :text => "Connection Reset, URL: #{@myurl}"
-      rescue NoMethodError
-        render :text => "<b/>NoMethodError</b> <br/> URL: #{@myurl} <br/> RESPONSE #{@myresp} <br/> QUERY_STRING #{@myurl.query} <br/> METHOD #{@mymethod}"
-      end
-
-      # HANDLE RESPONSE
-      case @myresp
-        when Net::HTTPSuccess then 
-          body = parse_links(@myresp.body)
-          render :text => body
-        when Net::HTTPRedirection then 
-          newurl = '/' + CGI::unescape(@myresp['location'])
-          redirect_to(newurl)
-        else
-          @myresp.error! unless @myresp.nil?
-      end
-
-      # flash var to store last seen host
-      flash[:last_host] = @myurl.host
-
+    # HANDLE CONNECTION and fetch a response
+    begin
+      @mytarget.resp = Net::HTTP.start(@mytarget.url.host,@mytarget.url.port) { |http|
+        http.send(@mytarget.method, @mytarget.url.path, @mytarget.url.query)  
+      }
+    rescue SocketError
+      render :text => "Socket Error, URL: #{@mytarget.url}"
+    rescue Errno::ECONNREFUSED
+      render :text => "Connection Refused, URL: #{@mytarget.url}"
+    rescue Errno::ECONNRESET
+      render :text => "Connection Reset, URL: #{@mytarget.url}"
+    rescue NoMethodError
+      render :text => "<b/>NoMethodError</b> <br/> URL: #{@mytarget.url} <br/> RESPONSE #{@mytarget.resp} <br/> QUERY_STRING #{@mytarget.url.query} <br/> METHOD #{@mytarget.method}"
     end
 
-  end
-
-  private
-
-  def parse_url(url_str)
-    url = URI.parse(url_str)
-    if url.path == "" then 
-      url.path= '/index.html'
+    # HANDLE RESPONSE
+    case @mytarget.resp
+      when Net::HTTPSuccess then 
+        @mytarget.parse_body(@mylocal,@mylocalport)
+        render :text => @mytarget.body
+      when Net::HTTPRedirection then 
+        newurl = '/' + CGI::unescape(@mytarget.resp['location'])
+        redirect_to(newurl)
+      else
+        @mytarget.resp.error! unless @mytarget.resp.nil?
     end
-    return url
-  end
 
-  def parse_links(body)
-
-    # add a basetag
-    basetag = '<base href="http://' + @mylocal + ':' + @mylocalport.to_s + '/http://' + @myurl.host + '/"/></head>'
-    body.gsub!(/<\/head>/i, basetag)
-
-    
-    # change all links in the page
-    body.gsub!(/(src=|href=)["'](.*?)["']/) { |x|
-
-      # try to parse as URL
-      begin
-        oldurl = URI.parse($2)
-      rescue URI::InvalidURIError
-        oldurl = $2
-      end
-    
-      case oldurl
-        when URI then
-          if oldurl.absolute? then newurl = $1 + "\"" + "http://" + @mylocal + ':' + @mylocalport.to_s + "/" + $2 + "\""
-          else newurl = $1 + "\"" + "http://" + @mylocal + ':' + @mylocalport.to_s + "/http://" + @myurl.host + "/" + $2 + "\""
-          end
-      end
-    }
-
-    return body
+    # flash var to store last seen host
+    flash[:last_host] = @mytarget.url.host
 
   end
 

@@ -1,15 +1,19 @@
 one:
   url: http://www.example.com
-  query: ""
+  query: 
+  method: 'get'
 
 two:
   url: http://www.example.com/
-  query: ""
+  query: 
+  method: 'get'
 
 three:
   url: http://www.example.com/index.html
-  query: ""
+  query: 
+  method: 'get'
 
 four:
   url: http://www.example.com/index.html
   query: "pippo=1"
+  method: 'get'
