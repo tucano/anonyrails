@@ -1,0 +1,15 @@
+one:
+  url: http://www.example.com
+  query: ""
+
+two:
+  url: http://www.example.com/
+  query: ""
+
+three:
+  url: http://www.example.com/index.html
+  query: ""
+
+four:
+  url: http://www.example.com/index.html
+  query: "pippo=1"

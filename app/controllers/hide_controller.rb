@@ -5,6 +5,9 @@ class HideController < ApplicationController
     @mylocal  = request.host
     @mylocalport = request.port
     @mymethod = request.request_method
+
+    @mytarget = Target.new(params[:myurl],request.query_string)
+
     @myparams = request.query_string
 
     target = params[:myurl] 
