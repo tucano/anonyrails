@@ -15,7 +15,7 @@ class HideController < ApplicationController
       
     # HANDLE CONNECTION and fetch a response
     begin
-      @mytarget.resp = Net::HTTP.start(@mytarget.url.host,@mytarget.url.port) { |http|
+      @myresp = Net::HTTP.start(@mytarget.url.host,@mytarget.url.port) { |http|
         http.send(@mytarget.method, @mytarget.url.path, @mytarget.url.query)  
       }
     rescue SocketError
@@ -25,19 +25,20 @@ class HideController < ApplicationController
     rescue Errno::ECONNRESET
       render :text => "Connection Reset, URL: #{@mytarget.url}"
     rescue NoMethodError
-      render :text => "<b/>NoMethodError</b> <br/> URL: #{@mytarget.url} <br/> RESPONSE #{@mytarget.resp} <br/> QUERY_STRING #{@mytarget.url.query} <br/> METHOD #{@mytarget.method}"
+      render :text => "<b/>NoMethodError</b> <br/> URL: #{@mytarget.url} <br/> RESPONSE #{@myresp} <br/> QUERY_STRING #{@mytarget.url.query} <br/> METHOD #{@mytarget.method}"
     end
 
     # HANDLE RESPONSE
-    case @mytarget.resp
+    case @myresp
       when Net::HTTPSuccess then 
+        @mytarget.body = @myresp.body.clone
         @mytarget.parse_body(@mylocal,@mylocalport)
         render :text => @mytarget.body
       when Net::HTTPRedirection then 
-        newurl = '/' + CGI::unescape(@mytarget.resp['location'])
+        newurl = '/' + CGI::unescape(@myresp['location'])
         redirect_to(newurl)
       else
-        @mytarget.resp.error! unless @mytarget.resp.nil?
+        @myresp.error! unless @myresp.nil?
     end
 
     # flash var to store last seen host

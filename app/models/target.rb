@@ -8,14 +8,11 @@ class Target
   def initialize(url_str, query_str, method)
     @url = url_parse(append_query(url_str, query_str))
     @method = method
-    @resp = nil
     @body = nil
   end
 
   def parse_body(local,localport)
     
-    @body = @resp.body.clone
-
     # add a basetag
     basetag = '<base href="http://' + local + ':' + localport.to_s + '/http://' + @url.host + '/"/></head>'
     @body.gsub!(/<\/head>/i, basetag)
